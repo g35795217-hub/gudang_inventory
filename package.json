@@ -1,0 +1,19 @@
+{
+  "name": "pln-gudang-inventory",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PLN Icon Plus - Gudang Inventory (Vercel: HTML/CSS/JS + Serverless API + Postgres)",
+  "scripts": {
+    "seed": "node scripts/seed.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node scripts/test-logic.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  },
+  "devDependencies": {
+    "xlsx": "0.18.5"
+  },
+  "engines": { "node": ">=20" }
+}

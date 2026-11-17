@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLN Icon Plus - Gudang Inventory</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="assets/vendor/poppins.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/style.css?v=2">
+<script src="assets/vendor/chart.umd.min.js" defer></script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body class="tema-gelap">
+<div id="boot" class="boot"><div class="boot-box"><img src="assets/logo.png" alt="PLN Icon Plus"><p id="boot-t">Memuat data...</p><progress id="boot-p" max="10" value="0"></progress></div></div>
+<div id="login" class="boot" hidden><form class="boot-box" id="lg"><img src="assets/logo.png" alt="PLN Icon Plus"><h3>Gudang Inventory</h3><p class="mu">Masukkan kata sandi untuk melanjutkan.</p>
+  <input type="password" name="password" placeholder="Kata sandi" autocomplete="current-password" required><button class="btn y" style="width:100%;margin-top:10px">Masuk</button><p id="lg-e" class="lg-e" hidden></p></form></div>
+<aside class="sb" id="sb">
+  <div class="brand"><div class="logo"><img src="assets/logo.png" alt="PLN Icon Plus"></div><span>Gudang Inventory</span></div>
+  <nav id="nav"></nav>
+</aside>
+<div class="mn">
+  <header>
+    <button class="hb" id="hb" aria-label="Menu"><i class="bi bi-list"></i></button>
+    <div><h2 id="jd">Dashboard</h2><small id="bc">Beranda</small></div>
+    <div class="hr">
+      <button class="btn" id="reload" title="Baca ulang data dari database"><i class="bi bi-arrow-repeat"></i><span class="hd-t"> Muat ulang</span></button>
+      <span class="dt"><i class="bi bi-calendar3"></i> <span id="tg"></span></span>
+      <a class="bell" href="#/dashboard" id="bell" title="Stok menipis / habis"><i class="bi bi-bell"></i><span class="nbd" id="nbd" hidden></span></a>
+      <button class="btn" id="keluar" title="Keluar" hidden><i class="bi bi-box-arrow-right"></i></button>
+    </div>
+  </header>
+  <main class="pin" id="main"></main>
+</div>
+<dialog id="fd" class="mb"><h3>Detail</h3><dl id="fdl" class="dl"></dl><div class="mf"><button type="button" class="btn y" data-tutup>Tutup</button></div></dialog>
+<dialog id="fm" class="mb"></dialog>
+</body>
+</html>
