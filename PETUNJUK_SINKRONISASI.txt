@@ -1,0 +1,21 @@
+PAKET SINKRONISASI DUA ARAH — GUDANG INVENTORY
+
+ISI PAKET
+- Code.gs: Google Apps Script untuk 10 sheet.
+- api/sheets-sync.js: endpoint Vercel untuk push Spreadsheet -> Neon dan export Neon -> Spreadsheet.
+
+PENTING SEBELUM DIPAKAI
+1. Paket ini dibuat berdasarkan proyek gudang_inventory-main(1).zip dan Code.gs yang tersedia di percakapan.
+2. Neon adalah sumber data utama. Website menulis ke Neon. Apps Script mengirim edit Spreadsheet ke Neon dan menarik perubahan Neon ke Spreadsheet setiap 5 menit.
+3. Upload api/sheets-sync.js ke folder api/ di proyek Vercel. Deploy ulang.
+4. Di Vercel, SHEETS_SYNC_SECRET harus sama persis dengan Script Property SYNC_SECRET. VERCEL_API_URL isi URL domain produksi Vercel.
+5. Tempel Code.gs ke Apps Script yang terikat ke Spreadsheet. Isi Script Properties VERCEL_API_URL dan SYNC_SECRET.
+6. Jalankan setupInventorySync() satu kali dan berikan izin.
+7. Jalankan syncNeonToSheets() untuk menarik data Neon ke Spreadsheet.
+
+BATASAN KESELAMATAN DATA
+- Tidak ada fungsi bootstrap massal yang otomatis menambahkan seluruh data lama tanpa ID. Ini disengaja untuk mencegah duplikasi karena data lama sudah pernah di-seed ke Neon.
+- Jika sheet sudah berisi data lama tanpa _WEB_ID, perubahan pada baris tersebut akan ditolak oleh API bila sheet tersebut sudah berisi data di Neon. Baris lama perlu direkonsiliasi terlebih dahulu dengan ID Neon.
+- Penghapusan baris manual di Spreadsheet tidak menghapus data Neon. Hapus melalui website, lalu jalankan sinkronisasi tarik; baris kosong tidak otomatis dibersihkan.
+- Website -> Spreadsheet bersifat polling setiap 5 menit, bukan real-time.
+- Uji dulu pada salinan Spreadsheet sebelum dipakai operasional.

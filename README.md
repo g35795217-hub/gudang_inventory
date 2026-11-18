@@ -44,7 +44,3 @@ Konversi Excel mentah dengan `scripts/buat_inventory_xlsx.py` (sama seperti vers
 - Pengecekan stok keluar dilakukan di browser (data sudah dimuat); server memvalidasi tanggal, SN ganda, dan konflik versi edit.
 - Seluruh data dimuat saat aplikasi dibuka (~30 ribu baris, dikirim terkompresi per 5.000 baris), lalu disegarkan otomatis bila tab dibuka kembali setelah 2 menit.
 - Plan gratis Neon/Vercel cukup untuk skala ini.
-
-
-## Integrasi Google Spreadsheet (tahap awal)
-Lihat `apps-script/README_APPS_SCRIPT.md`. Paket ini menambahkan sinkronisasi perubahan Spreadsheet menuju Neon. Sinkronisasi balik dari transaksi website ke Spreadsheet belum diaktifkan; lakukan setelah pemetaan data lama diverifikasi.
