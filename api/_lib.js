@@ -4,7 +4,7 @@ import { SHEET_NAMES } from '../public/js/schema.js';
 
 export const SHEETS = SHEET_NAMES;
 export const send = (res, code, obj) => { res.statusCode = code; res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.setHeader('Cache-Control', 'no-store'); res.end(JSON.stringify(obj)); };
-export class Galat extends Error { constructor(m, code = 400) { super(m); this.code = code; } }
+export class Galat extends Error { constructor(m, code = 401) { super(m); this.code = code; } }
 export async function bodyJson(req) {
   if (req.body && typeof req.body === 'object') return req.body;
   if (typeof req.body === 'string') return JSON.parse(req.body || '{}');
@@ -86,26 +86,30 @@ function makeStore(q) {
       const r = await q(`SELECT sheet_name FROM inventory_records WHERE sheet_name = ANY($1::text[]) AND upper(btrim(payload->>'sn'))=upper($2) AND ($3::bigint IS NULL OR id<>$3::bigint) LIMIT 1`, [sheets, sn, kecuali]);
       return r[0]?.sheet_name || null;
     },
+    async hitung() { await ensure(); const r = await q('SELECT sheet_name, count(*)::int AS n FROM inventory_records GROUP BY 1'); return Object.fromEntries(r.map(x => [x.sheet_name, x.n])); },
     async ensureSyncMap() {
       await ensure();
-      await q(`CREATE TABLE IF NOT EXISTS inventory_sheet_map (
-        sheet_name TEXT NOT NULL, row_number INTEGER NOT NULL,
-        record_id BIGINT NOT NULL REFERENCES inventory_records(id) ON DELETE CASCADE,
+      await q(`CREATE TABLE IF NOT EXISTS inventory_sync_map (
+        sheet_name TEXT NOT NULL,
+        row_number INTEGER NOT NULL,
+        record_id BIGINT NOT NULL,
         updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-        PRIMARY KEY(sheet_name,row_number), UNIQUE(sheet_name,record_id))`);
+        PRIMARY KEY (sheet_name, row_number),
+        UNIQUE (sheet_name, record_id)
+      )`);
     },
-    async syncMapGet(sheet,row) {
+    async syncMapGet(sheet, rowNumber) {
       await this.ensureSyncMap();
-      const r = await q('SELECT record_id FROM inventory_sheet_map WHERE sheet_name=$1 AND row_number=$2',[sheet,row]);
-      return r[0] ? {record_id:Number(r[0].record_id)} : null;
+      const r = await q('SELECT record_id FROM inventory_sync_map WHERE sheet_name=$1 AND row_number=$2', [sheet, rowNumber]);
+      return r[0] || null;
     },
-    async syncMapSet(sheet,row,id) {
+    async syncMapSet(sheet, rowNumber, recordId) {
       await this.ensureSyncMap();
-      await q(`INSERT INTO inventory_sheet_map(sheet_name,row_number,record_id)
-        VALUES($1,$2,$3) ON CONFLICT(sheet_name,row_number) DO UPDATE
-        SET record_id=EXCLUDED.record_id,updated_at=now()`,[sheet,row,id]);
+      await q(`INSERT INTO inventory_sync_map(sheet_name,row_number,record_id)
+        VALUES($1,$2,$3)
+        ON CONFLICT(sheet_name,row_number) DO UPDATE
+        SET record_id=EXCLUDED.record_id, updated_at=now()`, [sheet, rowNumber, recordId]);
     },
-    async hitung() { await ensure(); const r = await q('SELECT sheet_name, count(*)::int AS n FROM inventory_records GROUP BY 1'); return Object.fromEntries(r.map(x => [x.sheet_name, x.n])); },
   };
 }
 
